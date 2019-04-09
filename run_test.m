@@ -7,7 +7,7 @@ res={};
 cpu_init=cputime;
 
 % formulate model
-model = modcompile(strcat(pwd,'data/toy_model.xlsx'),strcat(pwd,'/toy_mechanism.xlsx'),strcat(pwd,'/toy_data.xlsx'));
+model = modcompile(strcat(pwd,'/data/toy_model.xlsx'),strcat(pwd,'/data/toy_mechanism.xlsx'),strcat(pwd,'/data/toy_data.xlsx'));
 
 % get kinetic parameter estimates
 res = kineticestimate(model, res);
