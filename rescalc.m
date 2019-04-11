@@ -3,7 +3,7 @@ function [r,W,J,vop,cs] = rescalc(x,model)
 %   Detailed explanation goes here
 ncond = length(model.d.vpert(1,:));
 % change for different models: 14-toy model, 1-medium model, 69-core model
-cind = 69;
+cind = 12;
 nr = length(model.p.dEdk);
 v = zeros(nr,ncond);
 sthresh = 1e-4;
