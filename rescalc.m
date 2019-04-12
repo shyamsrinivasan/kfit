@@ -32,7 +32,7 @@ desdp = dcsdp;
 nenz = model.ssubs.eblocks(end);
 es = zeros(nenz,ncond);
 
-parfor i = 1:ncond
+for i = 1:ncond
     done = false;
     c0 = ones(1,nm);
     ctr = 0;
