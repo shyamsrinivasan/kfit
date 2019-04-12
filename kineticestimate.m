@@ -1,7 +1,7 @@
 function [res] = kineticestimate(model,res)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-i_time = tic
+i_time = tic;
 nst = model.options.multistarts;
 fmin = Inf;
 model.options.dfbase = 1e-6;
