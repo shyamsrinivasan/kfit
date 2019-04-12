@@ -1,7 +1,7 @@
 function [res] = kineticestimate(model,res)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-tic
+i_time = tic
 nst = model.options.multistarts;
 fmin = Inf;
 model.options.dfbase = 1e-6;
@@ -37,6 +37,7 @@ while fail || iter<=1
 end
 
 res = compileresult(xopt,model);
-toc
+f_time = toc(i_time);
+fprintf('\n End time = %f', f_time);
 end
 
