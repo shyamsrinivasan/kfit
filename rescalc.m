@@ -82,19 +82,6 @@ for i = 1:ncond
 end
 vop = v;
 
-idx = model.d.idx;
-idz = idx>length(model.rid);
-idx = idx(idz);
-idx = idx-length(model.rid);
-vpred = v1(idx);
-vmeas = model.d.flx(idz);
-drdk = dvdk(idx,:);
-J = [drdp;drdk*dkdp];
-std = [std;model.d.err(idz)];
-std = std.^2;
-W = diag(1./std);
-
-r = [res;vpred-vmeas];
 for i = 1:ncond
     vj = v(:,i);
     vj = vj.*model.d.vpert(:,i);
