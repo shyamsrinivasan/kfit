@@ -31,60 +31,7 @@ dcsdp = dvdk;
 desdp = dcsdp;
 nenz = model.ssubs.eblocks(end);
 es = zeros(nenz,ncond);
-%{
-for i = 1:ncond
-    done = false;
-    c0 = ones(1,nm);
-    ctr = 0;
-    while ~done
-        complete = false;
-        css = c0;
-        iter = 0;
-        while ~complete
-            iter = iter+1;
-            [css,~,complete] = svsucsubs(css,model,i);
-            if ~complete
-                [css,complete] = SIFOInteg(css,model,i);
-            %else
-            %    css = ci;
-            end
-            if iter>1 && ~complete
-                opt = odeset('Jacobian',@(t,x) jacfn(t,x,model,i));
-                [~,C] = ode15s(@(t,x) svinteg(t,x,model,i),[0,1e4],css,opt);
-                css = C(end,:)';
-                [dc] = svinteg(1,css,model,i);
-                if max(abs(dc))<1e-5
-                    complete = true;
-                end
-            end
-        end
-        [dx,vx] = svinteg(1,css,model,i);
-        if max(abs(dx))<1e-5
-            done = true;
-            [vx,dvxdk] = flxcalc(model,css);
-            vx = vx.*model.d.vpert(:,i);
-            dvxdk = diag(full(model.d.vpert(:,i)))*dvxdk;
-            %vsc = 100*vx/abs(vx(12));
-            %dvscdk = (100/abs(vx(12)))*(dvxdk-vsc*dvxdk(12,:));
-            %Css(:,i) = c(end,:)';
-        else
-            ctr = ctr+1;
-            c0 = css;
-            sc = 100/abs(vx(12));
-            if ctr>20 && max(abs(dx))*sc<0.1
-                done = true;
-                [vx,dvxdk] = flxcalc(model,css);
-                vx = vx.*model.d.vpert(:,i);
-                dvxdk = diag(full(model.d.vpert(:,i)))*dvxdk;
-            end
-                
-        end
-    end
-    %vx = vx.*model.d.vpert(:,i);
-    v(:,i) = vx;
-    dvdk{i} = dvxdk;
-end
-%}
+
 parfor i = 1:ncond
     done = false;
     c0 = ones(1,nm);
