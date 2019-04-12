@@ -64,78 +64,24 @@ parfor i = 1:ncond
                         proceed = true;
                     end
                 end
-            %else
-            %    css = ci;
             end
             if iter>3
                 complete = true;
-            end
-            %if iter>4 && ~complete
-            %    opt = odeset('Jacobian',@(t,x) jacfn(t,x,model,i));
-            %    [~,C] = ode15s(@(t,x) svinteg(t,x,model,i),[0,1e7],css,opt);
-            %    css = C(end,:)';
-            %    [dc] = svinteg(1,css,model,i);
-            %    if max(abs(dc))<1e-6
-            %        complete = true;
-            %    end
-            %end
+            end           
         end
         [dx,vx] = svinteg(1,cs(:,i),model,i);
         if max(abs(dx))<sthresh || (abs(vx(cind))<0.1)% && max(abs(dx))<1)
             done = true;
             es(:,i) = efrac(cs(:,i),model,i);
             [dcsdp{i},desdp{i}] = spsens(model,k,cs(:,i),es(:,i));
-            %cs(:,i) = css(:);
-            %es(:,i) = ess(:);
-            %dcsdp{i} = Sc;
-            %desdp{i} = Se;
             [v(:,i),dvdk{i}] = flxcalc(model,cs(:,i),es(:,i),k,dcsdp{i},desdp{i});
             v(:,i) = v(:,i).*model.d.vpert(:,i);
-            dvdk{i} = diag(full(model.d.vpert(:,i)))*dvdk{i};
-            %vsc = 100*vx/abs(vx(12));
-            %dvscdk = (100/abs(vx(12)))*(dvxdk-vsc*dvxdk(12,:));
-            %Css(:,i) = c(end,:)';
-        %else
-        %    ctr = ctr+1;
-        %    c0 = css;
-        %    sc = 100/abs(vx(63));
-        %    if ctr>2 || max(abs(dx))*sc<0.1
-        %        done = true;
-        %        ess = efrac(css,model,i);
-        %        [Sc,Se] = spsens(model,k,css,ess);
-        %        cs(:,i) = css(:);
-        %        es(:,i) = ess(:);
-        %        dcsdp{i} = Sc;
-        %        desdp{i} = Se;
-        %        [vx,dvxdk] = flxcalc(model,css,ess,k,Sc,Se);
-        %        vx = vx.*model.d.vpert(:,i);
-        %        dvxdk = diag(full(model.d.vpert(:,i)))*dvxdk;
-        %    end
-                
+            dvdk{i} = diag(full(model.d.vpert(:,i)))*dvdk{i};         
         end
-    end
-    %vx = vx.*model.d.vpert(:,i);
-    %v(:,i) = vx;
-    %dvdk{i} = dvxdk;
+    end   
 end
 vop = v;
-%{
-v = v(:,2:end);
-dvdk = dvdk(:,2:end);
-v1 = v(:);
-dvdk = dvdk(:);
-dvdk = cell2mat(dvdk);
-dvdp = dvdk*dkdp;
-%{
-dcsdp = dcsdp(:);
-dcsdp = cell2mat(dcsdp);
-dcsdp = dcsdp*dkdp;
-cs = cs(:);
-desdp = desdp(:);
-desdp = cell2mat(desdp);
-desdp = desdp*dkdp;
-es = es(:);
-%}
+
 idx = model.d.idx;
 idz = idx>length(model.rid);
 idx = idx(idz);
@@ -147,14 +93,8 @@ J = [drdp;drdk*dkdp];
 std = [std;model.d.err(idz)];
 std = std.^2;
 W = diag(1./std);
-%save('drdp.mat','drdp');
-%save('W.mat','W');
-%std = 1./std;
+
 r = [res;vpred-vmeas];
-%ssres = res'*W*res;
-%g = res'*W*drdp;
-%g = 2*g';
-%}
 for i = 1:ncond
     vj = v(:,i);
     vj = vj.*model.d.vpert(:,i);
@@ -172,10 +112,6 @@ r = res;
 J = drdp;
 std = std.^2;
 W = diag(1./std);
-
-
-
-
 end
 
 
