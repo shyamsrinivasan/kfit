@@ -1,0 +1,8 @@
+__pycache__/
+.idea/
+*.jl
+*.mat
+results/
+lib/
+*.csv
+initial_values/
